@@ -305,7 +305,7 @@ if danh_gia_clicked and not st.session_state.get("danh_gia_done"):
 
 if tim_hoc_bong_clicked and not st.session_state.get("tim_done"):
     if "danh_gia_done" not in st.session_state:
-    st.session_state["danh_gia_done"] = False
+        st.session_state["danh_gia_done"] = False
 if "tim_done" not in st.session_state:
     st.session_state["tim_done"] = False
     st.session_state["tim_done"] = True    with st.spinner("Đang tìm học bổng phù hợp..."):
