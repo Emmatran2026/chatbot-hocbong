@@ -308,7 +308,8 @@ if tim_hoc_bong_clicked and not st.session_state.get("tim_done"):
         st.session_state["danh_gia_done"] = False
 if "tim_done" not in st.session_state:
     st.session_state["tim_done"] = False
-    st.session_state["tim_done"] = True    with st.spinner("Đang tìm học bổng phù hợp..."):
+    st.session_state["tim_done"] = True    
+    with st.spinner("Đang tìm học bổng phù hợp..."):
         ket_qua = logic.loc_hocbong(tuoi=tuoi, nuoc=nuoc)
     them_tin_nhan("user", "🔎 Tìm học bổng phù hợp")
     them_tin_nhan("assistant", ket_qua)
