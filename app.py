@@ -1,5 +1,3 @@
-import os
-
 import streamlit as st
 
 try:
@@ -21,23 +19,50 @@ st.markdown(
     """
     <style>
     .stApp {
-        background: #f7f8fc;
+        background: #ffffff;
     }
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #172554 0%, #1e3a8a 100%);
+        background: #f0f4ff;
     }
     [data-testid="stSidebar"] * {
-        color: #f8fafc;
+        color: #1a1a2e;
     }
     [data-testid="stSidebar"] .stCaption {
-        color: #cbd5e1;
+        color: #475569;
     }
     [data-testid="stSidebar"] input,
     [data-testid="stSidebar"] textarea,
-    [data-testid="stSidebar"] [data-baseweb="select"] > div {
-        background: rgba(255, 255, 255, 0.12);
-        color: #ffffff;
-        border-color: rgba(255, 255, 255, 0.3);
+    [data-testid="stSidebar"] [data-baseweb="input"] > div,
+    [data-testid="stSidebar"] [data-baseweb="textarea"] > div,
+    [data-testid="stSidebar"] [data-baseweb="select"] > div,
+    [data-testid="stSidebar"] [data-testid="stNumberInput"] input {
+        background: #ffffff !important;
+        color: #1a1a2e !important;
+        border-color: #94a3b8 !important;
+    }
+    [data-testid="stSidebar"] input::placeholder,
+    [data-testid="stSidebar"] textarea::placeholder {
+        color: #64748b !important;
+        opacity: 1 !important;
+    }
+    [data-testid="stSidebar"] [data-baseweb="select"] *,
+    [data-testid="stSidebar"] [data-baseweb="input"] *,
+    [data-testid="stSidebar"] [data-baseweb="textarea"] * {
+        color: #1a1a2e !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stSlider"] * {
+        color: #1a1a2e !important;
+    }
+    [data-baseweb="popover"] *,
+    [role="listbox"] *,
+    [role="option"] {
+        color: #1a1a2e !important;
+        background-color: #ffffff;
+    }
+    .stApp input,
+    .stApp textarea {
+        color: #1a1a2e !important;
+        caret-color: #1e3a8a;
     }
     .hero {
         padding: 1.4rem 1.6rem;
