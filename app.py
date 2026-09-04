@@ -278,7 +278,8 @@ st.markdown(
 )
 
 if danh_gia_clicked and not st.session_state.get("danh_gia_done"):
-    st.session_state["danh_gia_done"] = True    with st.spinner("Đang đánh giá hồ sơ..."):
+    st.session_state["danh_gia_done"] = True    
+    with st.spinner("Đang đánh giá hồ sơ..."):
         ket_qua = logic.danh_gia_ho_so(
             tuoi=tuoi,
             bang_cap=bang_cap,
