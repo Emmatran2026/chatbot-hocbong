@@ -401,7 +401,9 @@ def danh_gia_ho_so(
 
     tinh_trang_suc_khoe_chuan = _bo_dau(tinh_trang_suc_khoe).strip()
     diem_suc_khoe_map = {"tot": 5, "on dinh": 4, "co benh man tinh": 2}
-    diem_suc_khoe = diem_suc_khoe_map.get(tinh_trang_suc_khoe_chuan, 0)
+    diem_suc_khoe = float(
+        round(diem_suc_khoe_map.get(tinh_trang_suc_khoe_chuan, 0), 1)
+    )
     ly_do_suc_khoe = {
         "tot": "Sức khỏe tốt, thuận lợi cho kế hoạch học tập dài hạn.",
         "on dinh": "Sức khỏe ổn định; nên chuẩn bị hồ sơ y tế và bảo hiểm phù hợp.",
@@ -412,8 +414,10 @@ def danh_gia_ho_so(
     )
 
     # Nhóm 1: Học thuật/chuyên môn (25 điểm).
-    diem_kinh_nghiem = round(min(8, kinh_nghiem_nam * 8 / 20), 1)
-    diem_cong_bo = min(7, round(so_cong_bo * 1.4, 1))
+    diem_kinh_nghiem = float(
+        round(min(8, kinh_nghiem_nam * 8 / 20), 1)
+    )
+    diem_cong_bo = float(round(min(7, so_cong_bo * 1.4), 1))
 
     # Nhóm 2: Ngôn ngữ (15 điểm).
     if ielts_score >= 8:
@@ -428,8 +432,13 @@ def danh_gia_ho_so(
         diem_ielts = 3
     else:
         diem_ielts = 0
-    diem_ngon_ngu_nuoc_den = 5 if ngon_ngu_nuoc_den else 0
-    diem_ngon_ngu = diem_ielts + diem_ngon_ngu_nuoc_den
+    diem_ielts = float(round(diem_ielts, 1))
+    diem_ngon_ngu_nuoc_den = float(
+        round(5 if ngon_ngu_nuoc_den else 0, 1)
+    )
+    diem_ngon_ngu = float(
+        round(diem_ielts + diem_ngon_ngu_nuoc_den, 1)
+    )
 
     # Nhóm 3: Gia đình phù hợp (20 điểm).
     if so_con == 0:
@@ -460,7 +469,9 @@ def danh_gia_ho_so(
     else:
         diem_tuoi_con = 0
         ly_do_tuoi_con = "Chưa cung cấp tuổi con nhỏ nhất."
-    diem_tai_chinh = 6 if co_chung_minh_tai_chinh else 0
+    diem_so_con = float(round(diem_so_con, 1))
+    diem_tuoi_con = float(round(diem_tuoi_con, 1))
+    diem_tai_chinh = float(round(6 if co_chung_minh_tai_chinh else 0, 1))
 
     # Nhóm 5: Tác động xã hội (15 điểm).
     la_nganh_uu_tien = (
@@ -503,16 +514,27 @@ def danh_gia_ho_so(
         "tu": "Khu vực tư có giá trị thực tiễn; cần lượng hóa tác động cộng đồng.",
         "khac": "Loại tổ chức chưa thuộc ba nhóm công/tư/NGO.",
     }[loai_to_chuc_chuan]
-    diem_tac_dong = min(15, diem_nganh_nghe + diem_khu_vuc)
+    diem_nganh_nghe = float(round(diem_nganh_nghe, 1))
+    diem_khu_vuc = float(round(diem_khu_vuc, 1))
+    diem_tac_dong = float(
+        round(min(15, diem_nganh_nghe + diem_khu_vuc), 1)
+    )
 
     # Nhóm 6: Sức khỏe và cam kết (10 điểm). Do không có tham số cam kết
     # trở về riêng, loại tổ chức là tín hiệu proxy, không phải kết luận pháp lý.
-    diem_cam_ket = {"cong": 5, "ngo": 4, "tu": 3, "khac": 1}[loai_to_chuc_chuan]
+    diem_cam_ket = float(
+        round(
+            {"cong": 5, "ngo": 4, "tu": 3, "khac": 1}[loai_to_chuc_chuan],
+            1,
+        )
+    )
     ly_do_cam_ket = (
         f"Cam kết trở về tạm tính {diem_cam_ket}/5 theo loại tổ chức "
         f"'{loai_to_chuc_chuan}'; cần bổ sung kế hoạch trở về trong bài luận."
     )
-    diem_suc_khoe_cam_ket = diem_suc_khoe + diem_cam_ket
+    diem_suc_khoe_cam_ket = float(
+        round(diem_suc_khoe + diem_cam_ket, 1)
+    )
 
     ket_qua = []
     for hb in hoc_bong_list:
@@ -522,23 +544,37 @@ def danh_gia_ho_so(
             continue
 
         diem_bang_raw, ly_do_bang = _diem_bang_cap(bang_cap, hb["loai"])
-        diem_bang = round(diem_bang_raw * 10 / 30, 1)
-        diem_hoc_thuat = min(
-            25,
-            round(diem_bang + diem_kinh_nghiem + diem_cong_bo, 1),
+        diem_bang = float(round(diem_bang_raw * 10 / 30, 1))
+        diem_hoc_thuat = float(
+            round(
+                min(25, diem_bang + diem_kinh_nghiem + diem_cong_bo),
+                1,
+            )
         )
         loai_hoc_bong_chuan = _bo_dau(hb["loai"])
         if "nghien cuu" in loai_hoc_bong_chuan and so_cong_bo:
-            diem_hoc_thuat = min(
-                25,
-                round(diem_hoc_thuat + min(2, so_cong_bo * 0.4), 1),
+            diem_hoc_thuat = float(
+                round(
+                    min(25, diem_hoc_thuat + min(2, so_cong_bo * 0.4)),
+                    1,
+                )
             )
 
         ho_tro = hb["ho_tro_gia_dinh"].lower()
-        diem_dependent = {"yes": 6, "conditional": 3, "no": 0}.get(ho_tro, 0)
-        diem_gia_dinh = min(
-            20,
-            diem_so_con + diem_tuoi_con + diem_tai_chinh + diem_dependent,
+        diem_dependent = float(
+            round({"yes": 6, "conditional": 3, "no": 0}.get(ho_tro, 0), 1)
+        )
+        diem_gia_dinh = float(
+            round(
+                min(
+                    20,
+                    diem_so_con
+                    + diem_tuoi_con
+                    + diem_tai_chinh
+                    + diem_dependent,
+                ),
+                1,
+            )
         )
         ly_do_gia_dinh = (
             f"{'Có' if ho_tro == 'yes' else 'Có điều kiện' if ho_tro == 'conditional' else 'Không có'} "
@@ -546,19 +582,27 @@ def danh_gia_ho_so(
             f"{ly_do_tuoi_con} Chứng minh tài chính bổ sung: {diem_tai_chinh}/6."
         )
 
-        diem_mang_luoi = (
-            (7 if co_supervisor else 0)
-            + (4 if da_lien_he_alumni else 0)
-            + (4 if co_thu_gioi_thieu_qt else 0)
+        diem_supervisor = float(round(7 if co_supervisor else 0, 1))
+        diem_alumni = float(round(4 if da_lien_he_alumni else 0, 1))
+        diem_thu_gioi_thieu_qt = float(
+            round(4 if co_thu_gioi_thieu_qt else 0, 1)
         )
-        tong_diem = round(
-            diem_hoc_thuat
-            + diem_ngon_ngu
-            + diem_gia_dinh
-            + diem_mang_luoi
-            + diem_tac_dong
-            + diem_suc_khoe_cam_ket,
-            1,
+        diem_mang_luoi = float(
+            round(
+                diem_supervisor + diem_alumni + diem_thu_gioi_thieu_qt,
+                1,
+            )
+        )
+        tong_diem = float(
+            round(
+                diem_hoc_thuat
+                + diem_ngon_ngu
+                + diem_gia_dinh
+                + diem_mang_luoi
+                + diem_tac_dong
+                + diem_suc_khoe_cam_ket,
+                1,
+            )
         )
         ket_qua.append(
             {
@@ -641,31 +685,31 @@ def danh_gia_ho_so(
 
     diem_yeu = [
         (
-            15 - diem_ngon_ngu,
-            f"Ngôn ngữ còn thiếu {15 - diem_ngon_ngu} điểm; ưu tiên IELTS và ngôn ngữ nước đến.",
+            round(15 - diem_ngon_ngu, 1),
+            f"Ngôn ngữ còn thiếu {round(15 - diem_ngon_ngu, 1)} điểm; ưu tiên IELTS và ngôn ngữ nước đến.",
         ),
         (
-            15 - diem_mang_luoi,
-            f"Mạng lưới còn thiếu {15 - diem_mang_luoi} điểm; cần liên hệ supervisor/alumni "
+            round(15 - diem_mang_luoi, 1),
+            f"Mạng lưới còn thiếu {round(15 - diem_mang_luoi, 1)} điểm; cần liên hệ supervisor/alumni "
             "và xin thư giới thiệu quốc tế.",
         ),
         (
-            10 - diem_suc_khoe_cam_ket,
+            round(10 - diem_suc_khoe_cam_ket, 1),
             (
-                f"Sức khỏe và cam kết còn thiếu {10 - diem_suc_khoe_cam_ket} điểm; "
+                f"Sức khỏe và cam kết còn thiếu {round(10 - diem_suc_khoe_cam_ket, 1)} điểm; "
                 "cần bổ sung kế hoạch điều trị hoặc kế hoạch trở về cụ thể."
                 if diem_suc_khoe_cam_ket < 10
                 else "Sức khỏe đạt tối đa; vẫn cần chứng minh cam kết trở về bằng kế hoạch cụ thể."
             ),
         ),
         (
-            20 - tot_nhat["diem_gia_dinh"],
-            f"Gia đình còn thiếu {20 - tot_nhat['diem_gia_dinh']} điểm; cần hoàn thiện "
+            round(20 - tot_nhat["diem_gia_dinh"], 1),
+            f"Gia đình còn thiếu {round(20 - tot_nhat['diem_gia_dinh'], 1)} điểm; cần hoàn thiện "
             "chứng minh tài chính và xác minh chính sách dependent.",
         ),
         (
-            25 - tot_nhat["diem_hoc_thuat"],
-            f"Học thuật còn thiếu {25 - tot_nhat['diem_hoc_thuat']} điểm; "
+            round(25 - tot_nhat["diem_hoc_thuat"], 1),
+            f"Học thuật còn thiếu {round(25 - tot_nhat['diem_hoc_thuat'], 1)} điểm; "
             "cần tăng công bố hoặc làm rõ sự phù hợp của bằng cấp.",
         ),
     ]
@@ -686,8 +730,8 @@ def danh_gia_ho_so(
         f"(số con {diem_so_con}/4, tuổi con {diem_tuoi_con}/4, "
         f"tài chính bổ sung {diem_tai_chinh}/6, dependent {tot_nhat['diem_gia_dinh'] - diem_so_con - diem_tuoi_con - diem_tai_chinh}/6).",
         f"- Mạng lưới quan hệ: {diem_mang_luoi}/15 (supervisor "
-        f"{7 if co_supervisor else 0}/7, alumni {4 if da_lien_he_alumni else 0}/4, "
-        f"thư giới thiệu quốc tế {4 if co_thu_gioi_thieu_qt else 0}/4).",
+        f"{diem_supervisor}/7, alumni {diem_alumni}/4, "
+        f"thư giới thiệu quốc tế {diem_thu_gioi_thieu_qt}/4).",
         f"- Tác động xã hội: {diem_tac_dong}/15 ({ly_do_nganh_nghe} {ly_do_khu_vuc})",
         f"- Sức khỏe và cam kết: {diem_suc_khoe_cam_ket}/10 "
         f"(sức khỏe {diem_suc_khoe}/5; cam kết proxy {diem_cam_ket}/5).",
