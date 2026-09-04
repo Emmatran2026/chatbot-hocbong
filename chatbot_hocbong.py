@@ -3,6 +3,7 @@ import csv
 import os
 import io
 import unicodedata
+from collections import Counter
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
@@ -41,7 +42,55 @@ Eiffel Excellence,Pháp,Thạc sĩ/Nghiên cứu,30,55,conditional,1400,January,
 
 def doc_csv():
     reader = csv.DictReader(io.StringIO(CSV_DATA))
-    return list(reader)
+    fieldnames = reader.fieldnames or []
+    rows = list(reader)
+    total_before = len(rows)
+
+    ten_counts = Counter(
+        row.get("ten", "").strip().casefold()
+        for row in rows
+        if row.get("ten", "").strip()
+    )
+    duplicate_names = sorted(
+        ten for ten, count in ten_counts.items() if count > 1
+    )
+
+    seen_rows = set()
+    unique_rows = []
+    duplicate_full_names = []
+    for row in rows:
+        row_key = tuple(row.get(column, "") for column in fieldnames)
+        if row_key in seen_rows:
+            duplicate_full_names.append(row.get("ten", "").strip())
+            continue
+        seen_rows.add(row_key)
+        unique_rows.append(row)
+
+    print("=== Kiểm tra duplicate CSV_DATA ===")
+    print(f"Tổng số học bổng trước khi xóa: {total_before}")
+    print(
+        "Học bổng trùng tên: "
+        + (", ".join(duplicate_names) if duplicate_names else "Không có")
+    )
+    print(
+        "Các dòng trùng hoàn toàn tất cả cột: "
+        + (
+            ", ".join(duplicate_full_names)
+            if duplicate_full_names
+            else "Không có"
+        )
+    )
+    print(
+        "Danh sách học bổng bị duplicate: "
+        + (
+            ", ".join(sorted(set(duplicate_names + duplicate_full_names)))
+            if duplicate_names or duplicate_full_names
+            else "Không có"
+        )
+    )
+    print(f"Tổng số học bổng sau khi xóa: {len(unique_rows)}")
+    print(f"Số dòng duplicate đã xóa: {total_before - len(unique_rows)}")
+    return unique_rows
 
 
 hoc_bong_list = doc_csv()
