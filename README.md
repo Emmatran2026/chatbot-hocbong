@@ -15,7 +15,8 @@ streamlit run app.py
 1. Truy cập [share.streamlit.io](https://share.streamlit.io/) và đăng nhập bằng GitHub.
 2. Chọn **Create app**.
 3. Chọn repository `chatbot-hocbong`, branch `main`, file chính `app.py`.
-4. Mở **Advanced settings → Secrets** và thêm:
+4. Trong **Advanced settings**, chọn Python **3.13** vì project yêu cầu Python `>=3.13`.
+   Tại mục **Secrets**, thêm:
 
 ```toml
 GEMINI_API_KEY = "dán-Gemini-key-của-bạn-vào-đây"
