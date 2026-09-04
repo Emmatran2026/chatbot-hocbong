@@ -46,13 +46,18 @@ def doc_csv():
     rows = list(reader)
     total_before = len(rows)
 
-    ten_counts = Counter(
-        row.get("ten", "").strip().casefold()
-        for row in rows
-        if row.get("ten", "").strip()
-    )
+    ten_counts = Counter()
+    ten_display = {}
+    for row in rows:
+        ten = row.get("ten", "").strip()
+        if ten:
+            ten_key = ten.casefold()
+            ten_counts[ten_key] += 1
+            ten_display.setdefault(ten_key, ten)
     duplicate_names = sorted(
-        ten for ten, count in ten_counts.items() if count > 1
+        ten_display[ten]
+        for ten, count in ten_counts.items()
+        if count > 1
     )
 
     seen_rows = set()
