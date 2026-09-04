@@ -277,8 +277,8 @@ st.markdown(
     unsafe_allow_html=False,
 )
 
-if danh_gia_clicked:
-    with st.spinner("Đang đánh giá hồ sơ..."):
+if danh_gia_clicked and not st.session_state.get("danh_gia_done"):
+    st.session_state["danh_gia_done"] = True    with st.spinner("Đang đánh giá hồ sơ..."):
         ket_qua = logic.danh_gia_ho_so(
             tuoi=tuoi,
             bang_cap=bang_cap,
@@ -302,8 +302,12 @@ if danh_gia_clicked:
         f"{ket_qua}\n\nNgân sách tham khảo bạn đã nhập: {ngan_sach:,} EUR/tháng.",
     )
 
-if tim_hoc_bong_clicked:
-    with st.spinner("Đang tìm học bổng phù hợp..."):
+if tim_hoc_bong_clicked and not st.session_state.get("tim_done"):
+    if "danh_gia_done" not in st.session_state:
+    st.session_state["danh_gia_done"] = False
+if "tim_done" not in st.session_state:
+    st.session_state["tim_done"] = False
+    st.session_state["tim_done"] = True    with st.spinner("Đang tìm học bổng phù hợp..."):
         ket_qua = logic.loc_hocbong(tuoi=tuoi, nuoc=nuoc)
     them_tin_nhan("user", "🔎 Tìm học bổng phù hợp")
     them_tin_nhan("assistant", ket_qua)
